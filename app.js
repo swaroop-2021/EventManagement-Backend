@@ -456,6 +456,6 @@ app.use((error,req,res,next)=>{
 
 app.listen(process.env.PORT,()=>{
     db().then(res=>{
-        console.log("Listening on port 8081  and connected to db");
+        console.log("Listening on port "+process.env.PORT+" and connected to db");
     });
 });
