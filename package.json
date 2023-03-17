@@ -19,9 +19,9 @@
   },
   "scripts": {
     "start": "node app",
-    "build": "node build",
-    "test": "node test",
-    "eject": "node eject"
+    "build": "node run build",
+    "test": "node run test",
+    "eject": "node run eject"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
