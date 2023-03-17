@@ -18,10 +18,7 @@
     "nodemailer": "^6.8.0"
   },
   "scripts": {
-    "start": "node app",
-    "build": "node run build",
-    "test": "node run test",
-    "eject": "node run eject"
+    "start": "node app"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
