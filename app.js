@@ -7,7 +7,6 @@ const userDb = require('./model/user');
 const eventDb = require('./model/event');
 const app=express();
 const db=require("./util/database");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const multer = require('multer');
 const fs=require("fs");
@@ -49,7 +48,7 @@ app.post("/login",(req,res,next)=>{
             }
           else {
             
-            const isValid=bcrypt.compareSync(password, user[0].password)
+            const isValid=(password===user[0].password)
             if(!isValid){
                 const error=new Error("Invalid Password");
                 error.statusCode=401;
@@ -125,59 +124,55 @@ app.post("/register",(req,res,next)=>{
         if (user)
           res.status(409).json({ error: "The entered Email already exist!" });
         else {
-          bcrypt.hash(values.password, 10, (error, hash) => {
-            if (error) res.status(500).json({ error });
-            else {
-                const userTypes=["user","organizer","admin"];
-                if(!userTypes.includes(values.userType)){
-                    res.status(400).json({message:"Invalid UserType"});
-                }else{
-                    
-                    const user=new userDb({
-                        name:values.name,
-                        email:values.email,
-                        password:hash,
-                        type:values.userType,
-                        gender:values.gender,
-                        usn:values.usn,
-                        phoneNumber:values.phoneNumber,
-                        semester:values.semester,
-                        department:values.department,
-                        userType:values.userType
-                    });
-            
-                    user.save(user)
-                        .then(response=>{
-                            console.log("saved");
-                            let transporter = nodemailer.createTransport({
-                                service: "gmail",
-                                port: 587,
-                                secure: false, // true for 465, false for other ports
-                                auth: {
-                                  user: process.env.EMAIL,
-                                  pass: process.env.PASSWORD,
-                                },
-                              });
-            
-                              transporter
-                                .sendMail({
-                                  from: process.env.EMAIL,
-                                  to: `${values.email}`,
-                                  subject: "Welcome to KLE Tech Event Management System",
-                                  text: `Hello Dear ${values.name}`,
-                                  html: `<b>Hello Dear User, we are happy that you join our Website. Kind Regards, KLE Tech Event Management System.</b>`,
-                                })
-                                .then((info) => console.log("Email has been sent!"))
-                                .catch((err) => console.log(err));
-                            res.status(201).json({
-                                message: "Signed Up Successfully",
-                                user,
-                            });
-                        })
-                        .catch((error) => res.status(500).json({ message:"Error while saving",err:error }));
-                }
+            const userTypes=["user","organizer","admin"];
+            if(!userTypes.includes(values.userType)){
+                res.status(400).json({message:"Invalid UserType"});
+            }else{
+                
+                const user=new userDb({
+                    name:values.name,
+                    email:values.email,
+                    password:values.password,
+                    type:values.userType,
+                    gender:values.gender,
+                    usn:values.usn,
+                    phoneNumber:values.phoneNumber,
+                    semester:values.semester,
+                    department:values.department,
+                    userType:values.userType
+                });
+        
+                user.save(user)
+                    .then(response=>{
+                        console.log("saved");
+                        let transporter = nodemailer.createTransport({
+                            service: "gmail",
+                            port: 587,
+                            secure: false, // true for 465, false for other ports
+                            auth: {
+                              user: process.env.EMAIL,
+                              pass: process.env.PASSWORD,
+                            },
+                          });
+        
+                          transporter
+                            .sendMail({
+                              from: process.env.EMAIL,
+                              to: `${values.email}`,
+                              subject: "Welcome to KLE Tech Event Management System",
+                              text: `Hello Dear ${values.name}`,
+                              html: `<b>Hello Dear User, we are happy that you join our Website. Kind Regards, KLE Tech Event Management System.</b>`,
+                            })
+                            .then((info) => console.log("Email has been sent!"))
+                            .catch((err) => console.log(err));
+                        res.status(201).json({
+                            message: "Signed Up Successfully",
+                            user,
+                        });
+                    })
+                    .catch((error) => res.status(500).json({ message:"Error while saving",err:error }));
             }
-        })
+        
     }
     })
   
