@@ -161,7 +161,7 @@ app.post("/register",(req,res,next)=>{
                               to: `${values.email}`,
                               subject: "Welcome to KLE Tech Event Management System",
                               text: `Hello Dear ${values.name}`,
-                              html: `<b>Hello Dear User, we are happy that you join our Website. Kind Regards, KLE Tech Event Management System.</b>`,
+                              html: `We are happy that you have joined our Website.<br></br>Kind Regards, KLE Tech Event Management System.`,
                             })
                             .then((info) => console.log("Email has been sent!"))
                             .catch((err) => console.log(err));
